@@ -48,7 +48,7 @@
         "telephone": "+524432152843",
         "areaServed": "MX",
         "availableLanguage": "es",
-        "knowsAbout": ["Derecho mercantil", "Derecho civil", "Derecho familiar", "Derecho penal", "Juicio de amparo", "Defensa del deudor", "Pagarés", "Embargos"],
+        "knowsAbout": ["Derecho mercantil", "Derecho civil", "Derecho familiar", "Derecho penal", "Defensa penal", "Carpetas de investigación", "Juicio de amparo", "Defensa del deudor", "Pagarés", "Embargos"],
         "slogan": "Defensa patrimonial, litigio estratégico y consultoría legal"
     }
     </script>
@@ -61,6 +61,7 @@
             {"@type": "Question", "name": "¿Pueden representarme si soy el deudor en un juicio mercantil?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. En juicios mercantiles podemos representar al deudor, preparar su defensa y presentar las excepciones que correspondan."}},
             {"@type": "Question", "name": "¿Qué debo hacer si me embargaron o creo que me van a embargar?", "acceptedAnswer": {"@type": "Answer", "text": "Actúa pronto. Reúne los documentos del juicio y las notificaciones, y consulta de inmediato, porque los plazos legales corren desde el primer día."}},
             {"@type": "Question", "name": "Me demandaron, ¿pueden asesorarme y presentar mi defensa?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Brindamos asesoría y presentación de la defensa cuando te demandan en las vías civil, mercantil, familiar y laboral."}},
+            {"@type": "Question", "name": "Me denunciaron o hay una carpeta de investigación en mi contra, ¿pueden defenderme?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Atendemos asuntos de derecho penal: te asesoramos desde la carpeta de investigación, te acompañamos en audiencias y llevamos tu defensa durante el proceso. Antes de declarar o firmar cualquier cosa, consulta con un abogado."}},
             {"@type": "Question", "name": "¿En qué materias del derecho trabajan?", "acceptedAnswer": {"@type": "Answer", "text": "Principalmente derecho mercantil, civil, familiar, penal y amparo."}},
             {"@type": "Question", "name": "¿Cómo puedo iniciar mi caso?", "acceptedAnswer": {"@type": "Answer", "text": "Escríbenos por WhatsApp al 443 215 2843, cuéntanos tu situación y te explicamos los siguientes pasos."}}
         ]
@@ -195,12 +196,14 @@
             <figure class="sit__img is-first"><img src="img/firma-documento.jpg" width="1200" height="1798" loading="lazy" decoding="async" alt="Persona firmando un documento con pluma sobre un escritorio de madera"></figure>
             <figure class="sit__img"><img src="img/justicia-estatua.jpg" width="1200" height="1800" loading="lazy" decoding="async" alt="Estatua de la justicia con balanza y mazo en un despacho clásico"></figure>
             <figure class="sit__img"><img src="img/libros-dorados.jpg" width="1200" height="1800" loading="lazy" decoding="async" alt="Libros jurídicos con luz cálida dorada"></figure>
+            <figure class="sit__img"><img src="img/balanza-mazo.jpg" width="1200" height="1800" loading="lazy" decoding="async" alt="Balanza de la justicia y mazo sobre un escritorio de madera"></figure>
         </div>
         <div class="sit__body">
             <ul class="sit__nav" aria-hidden="true">
                 <li class="is-on">Pagarés</li>
                 <li>Embargos</li>
                 <li>Demandas</li>
+                <li>Penal</li>
             </ul>
             <div class="sit__states">
                 <div class="sit__state">
@@ -215,8 +218,12 @@
                     <h3 class="sit__q">¿Te demandaron en la vía civil, mercantil, familiar o <span class="gold">laboral?</span></h3>
                     <p class="sit__a">Te damos asesoría y presentamos tu defensa en tiempo y forma. Un plazo vencido no se recupera.</p>
                 </div>
+                <div class="sit__state">
+                    <h3 class="sit__q">¿Te denunciaron o hay una carpeta de investigación <span class="gold">en tu contra?</span></h3>
+                    <p class="sit__a">Desde la primera citación cada decisión pesa. Te orientamos y te acompañamos en cada etapa del proceso penal para que no enfrentes solo a la autoridad.</p>
+                </div>
             </div>
-            <a class="btn btn-gold btn--lg" href="https://wa.me/524432152843" target="_blank" rel="noopener" data-wa="Hola, me están cobrando, embargando o demandando y necesito ayuda legal." data-magnetic>
+            <a class="btn btn-gold btn--lg" href="https://wa.me/524432152843" target="_blank" rel="noopener" data-wa="Hola, me están cobrando, embargando, demandando o denunciando y necesito ayuda legal." data-magnetic>
                 <span>Me está pasando esto</span><i class="ph ph-arrow-up-right" aria-hidden="true"></i>
             </a>
         </div>
@@ -493,6 +500,10 @@
                 <div class="faq__a"><p>Sí. Brindamos asesoría y presentación de la defensa cuando te demandan en las vías civil, mercantil, familiar y laboral.</p></div>
             </details>
             <details name="faq">
+                <summary><span>Me denunciaron o hay una carpeta de investigación en mi contra, ¿pueden defenderme?</span><i class="ph ph-plus" aria-hidden="true"></i></summary>
+                <div class="faq__a"><p>Sí. Atendemos asuntos de derecho penal: te asesoramos desde la carpeta de investigación, te acompañamos en audiencias y llevamos tu defensa durante el proceso. Antes de declarar o firmar cualquier cosa, consulta con un abogado.</p></div>
+            </details>
+            <details name="faq">
                 <summary><span>¿En qué materias del derecho trabajan?</span><i class="ph ph-plus" aria-hidden="true"></i></summary>
                 <div class="faq__a"><p>Principalmente derecho mercantil, civil, familiar, penal y amparo.</p></div>
             </details>
@@ -543,7 +554,7 @@
                         <option>Me demandaron</option>
                         <option>Asunto mercantil o civil</option>
                         <option>Asunto familiar</option>
-                        <option>Asunto penal</option>
+                        <option>Asunto penal (denuncia o carpeta de investigación)</option>
                         <option>Necesito un amparo</option>
                         <option>Otro asunto o no estoy seguro</option>
                     </select>

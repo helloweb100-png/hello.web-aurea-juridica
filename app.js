@@ -199,8 +199,8 @@
 
     /* ─────────────────────────────────────────────
        HERO 3D (Three.js)
-       Emblema "A" extruido en oro, anillos orbitales, satélites
-       y un campo de partículas que reacciona al puntero y al scroll.
+       Logo de Áurea (la "A" con su asta) extruido en oro, anillos orbitales,
+       satélites y un campo de partículas que reacciona al puntero y al scroll.
     ───────────────────────────────────────────── */
     function initHero3D() {
         const canvas = $('#hero-canvas');
@@ -246,25 +246,68 @@
         const rig = new THREE.Group();
         scene.add(rig);
 
-        /* ── Emblema ── */
+        /* ── Emblema: el logo real de Áurea (img/logo-mark.png) vectorizado y extruido ──
+           Dos piezas, igual que el logo: la pierna izquierda y el trazo derecho, que ya
+           incluye el travesaño diagonal y el asta. Coordenadas centradas, alto total 2.8. */
         const emblem = new THREE.Group();
         rig.add(emblem);
-        const poly = (pts) => { const s = new THREE.Shape(); pts.forEach(([x, y], i) => (i ? s.lineTo(x, y) : s.moveTo(x, y))); s.closePath(); return s; };
-        const part = (pts, depth, z, mat) => {
-            const geo = new THREE.ExtrudeGeometry(poly(pts), { depth, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.035, bevelSegments: 4, curveSegments: 1 });
-            const m = new THREE.Mesh(geo, mat);
-            m.position.z = z - depth / 2;
-            emblem.add(m);
-            return m;
+        const LOGO_PARTS = [
+            [[-0.279, 0.89], [-0.297, 0.867], [-0.428, 0.534], [-0.471, 0.446], [-0.714, -0.173], [-1.134, -1.195], [-1.161, -1.25], [-1.193, -1.292], [-1.259, -1.345], [-1.349, -1.4], [-0.7, -1.4], [-0.746, -1.35], [-0.782, -1.318], [-0.795, -1.275], [-0.79, -1.211], [-0.563, -0.624], [-0.109, 0.485], [-0.228, 0.789]],
+            [[-0.055, 1.4], [-0.195, 1.079], [-0.199, 1.046], [0.045, 0.463], [0.163, 0.2], [0.201, 0.092], [0.181, 0.067], [-0.28, -0.214], [-0.392, -0.504], [-0.421, -0.615], [-0.419, -0.632], [-0.411, -0.637], [-0.367, -0.615], [0.306, -0.194], [0.318, -0.194], [0.332, -0.206], [0.361, -0.29], [0.347, -0.31], [0.231, -0.376], [-0.127, -0.595], [-0.149, -0.617], [-0.149, -1.4], [0.079, -1.4], [0.079, -0.798], [0.098, -0.782], [0.367, -0.618], [0.433, -0.568], [0.462, -0.56], [0.474, -0.571], [0.599, -0.844], [0.734, -1.163], [0.753, -1.238], [0.743, -1.299], [0.718, -1.336], [0.679, -1.4], [1.349, -1.4], [1.237, -1.342], [1.167, -1.29], [1.114, -1.231], [1.068, -1.151], [0.224, 0.794]]
+        ];
+        const DEPTH = 0.3, BEVEL = 0.024;
+
+        /* Normales suavizadas por ángulo: el bisel brilla como metal pulido y las aristas rectas siguen nítidas */
+        const smoothNormals = (geo, minCos = 0.6) => {
+            geo.computeVertexNormals();
+            const pos = geo.attributes.position, nor = geo.attributes.normal, n = pos.count;
+            const groups = new Map();
+            for (let i = 0; i < n; i++) {
+                const k = Math.round(pos.getX(i) * 1e4) + ',' + Math.round(pos.getY(i) * 1e4) + ',' + Math.round(pos.getZ(i) * 1e4);
+                (groups.get(k) || groups.set(k, []).get(k)).push(i);
+            }
+            const out = new Float32Array(n * 3);
+            groups.forEach((ids) => {
+                ids.forEach((i) => {
+                    let x = 0, y = 0, z = 0;
+                    ids.forEach((j) => {
+                        const d = nor.getX(i) * nor.getX(j) + nor.getY(i) * nor.getY(j) + nor.getZ(i) * nor.getZ(j);
+                        if (d >= minCos) { x += nor.getX(j); y += nor.getY(j); z += nor.getZ(j); }
+                    });
+                    const l = Math.hypot(x, y, z) || 1;
+                    out[i * 3] = x / l; out[i * 3 + 1] = y / l; out[i * 3 + 2] = z / l;
+                });
+            });
+            nor.array.set(out);
+            nor.needsUpdate = true;
         };
-        const goldBright = new THREE.MeshStandardMaterial({ color: 0xe3be63, metalness: 1, roughness: 0.22, envMapIntensity: 1.3 });
-        const goldDeep = new THREE.MeshStandardMaterial({ color: 0xc9a04a, metalness: 1, roughness: 0.38, envMapIntensity: 1.9 });
-        const goldPale = new THREE.MeshStandardMaterial({ color: 0xf3dc9a, metalness: 1, roughness: 0.18, envMapIntensity: 1.3 });
-        part([[-0.22, 1.4], [0.20, 1.4], [-0.80, -1.4], [-1.22, -1.4]], 0.36, 0, goldBright);   // pierna izquierda
-        part([[-0.20, 1.4], [0.22, 1.4], [1.22, -1.4], [0.80, -1.4]], 0.34, 0, goldDeep);       // pierna derecha
-        part([[-0.55, -0.55], [0.55, -0.55], [0.55, -0.29], [-0.55, -0.29]], 0.2, 0.02, goldPale); // travesaño
-        part([[-0.12, -1.4], [0.14, -1.4], [0.14, -0.55], [-0.12, -0.55]], 0.28, 0.02, goldPale);  // asta de la F
-        part([[0.14, -1.0], [0.44, -1.0], [0.44, -0.82], [0.14, -0.82]], 0.28, 0.02, goldPale);    // brazo de la F
+
+        /* Degradado dorado del logo: champán claro hacia el centro-derecha, oro más profundo en los bordes */
+        const goldDeep = new THREE.Color(0xd8a948), goldPale = new THREE.Color(0xffe9ae), tint = new THREE.Color();
+        const paintGold = (geo) => {
+            const p = geo.attributes.position, c = new Float32Array(p.count * 3);
+            for (let i = 0; i < p.count; i++) {
+                const d = Math.hypot((p.getX(i) - 0.25) * 0.85, p.getY(i) + 0.05);
+                const k = Math.max(0, Math.min(1, 1 - d / 2.1));
+                tint.copy(goldDeep).lerp(goldPale, k * k * (3 - 2 * k));
+                c[i * 3] = tint.r; c[i * 3 + 1] = tint.g; c[i * 3 + 2] = tint.b;
+            }
+            geo.setAttribute('color', new THREE.BufferAttribute(c, 3));
+        };
+
+        const goldMat = new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.92, roughness: 0.26, envMapIntensity: 1.5 });
+        LOGO_PARTS.forEach((pts) => {
+            const shape = new THREE.Shape();
+            pts.forEach(([x, y], i) => (i ? shape.lineTo(x, y) : shape.moveTo(x, y)));
+            shape.closePath();
+            /* bevelOffset negativo: la silueta frontal conserva exactamente el contorno del logo */
+            const geo = new THREE.ExtrudeGeometry(shape, { depth: DEPTH, bevelEnabled: true, bevelThickness: 0.05, bevelSize: BEVEL, bevelOffset: -BEVEL, bevelSegments: 3, curveSegments: 1 });
+            smoothNormals(geo);
+            paintGold(geo);
+            const mesh = new THREE.Mesh(geo, goldMat);
+            mesh.position.z = -DEPTH / 2;
+            emblem.add(mesh);
+        });
 
         /* ── Anillos orbitales y satélites ── */
         const rings = new THREE.Group();
@@ -370,7 +413,7 @@
             const intro = ease(state.intro);
             const p = state.p;
 
-            emblem.rotation.y = (1 - intro) * Math.PI * 2.6 + Math.sin(t * 0.45) * 0.42 + mouse.sx * 0.38 + p * Math.PI * 1.5;
+            emblem.rotation.y = (1 - intro) * Math.PI * 2.6 + Math.sin(t * 0.45) * 0.3 + mouse.sx * 0.3 + p * Math.PI * 1.5;
             emblem.rotation.x = mouse.sy * 0.16 + Math.sin(t * 0.3) * 0.04;
             emblem.position.y = Math.sin(t * 0.9) * 0.1;
             emblem.scale.setScalar(Math.max(0.0001, intro));
@@ -675,29 +718,30 @@
             });
         }
 
-        /* Situaciones: tres estados fijados con cambio de imagen */
+        /* Situaciones: un estado por cada .sit__state, fijados con cambio de imagen */
         mm.add('(prefers-reduced-motion: no-preference)', () => {
             const states = $$('.sit__state'), imgs = $$('.sit__img'), tabs = $$('.sit__nav li');
-            if (states.length < 3) return;
+            const n = states.length;
+            if (n < 2 || imgs.length < n) return;
             const tl = gsap.timeline({
                 defaults: { ease: 'none' },
                 scrollTrigger: {
-                    trigger: '#situaciones', start: 'top top', end: '+=280%', pin: true, scrub: 0.8, anticipatePin: 1,
+                    trigger: '#situaciones', start: 'top top', end: '+=' + n * 93 + '%', pin: true, scrub: 0.8, anticipatePin: 1,
                     onUpdate: (self) => {
-                        const i = self.progress < 0.333 ? 0 : self.progress < 0.667 ? 1 : 2;
+                        const i = Math.min(n - 1, Math.floor(self.progress * n));
                         tabs.forEach((t, k) => t.classList.toggle('is-on', k === i));
                     }
                 }
             });
             tl.fromTo($('img', imgs[0]), { scale: 1.12 }, { scale: 1.02, duration: 2 }, 0);
-            [1, 2].forEach((i) => {
+            for (let i = 1; i < n; i++) {
                 const at = i * 2;
                 tl.to(states[i - 1], { autoAlpha: 0, y: -36, duration: 0.6, ease: 'power2.in' }, at - 0.5)
                   .fromTo(states[i], { autoAlpha: 0, y: 44 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, at - 0.1)
                   .fromTo(imgs[i], { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.8, ease: 'power2.inOut' }, at - 0.5)
                   .fromTo($('img', imgs[i]), { scale: 1.25 }, { scale: 1.03, duration: 2 }, at - 0.5);
-            });
-            tl.to({}, { duration: 0.01 }, 6);
+            }
+            tl.to({}, { duration: 0.01 }, n * 2);
         });
         mm.add('(prefers-reduced-motion: reduce)', () => {
             $('#situaciones') && $('#situaciones').classList.add('is-static');
